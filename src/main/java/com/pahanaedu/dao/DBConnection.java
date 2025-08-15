@@ -9,10 +9,9 @@ public class DBConnection {
     private static DBConnection dbConnection;
     private Connection connection;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/pahana_edu_db?useSSL=false";
-    private static final String USERNAME = "root"; 
-    private static final String PASSWORD = "Rms74627"; 
-
+    private static final String URL = "jdbc:mysql://localhost:3306/pahanadb?useSSL=false&allowPublicKeyRetrieval=true";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "Rms74627";
 
     private DBConnection() throws SQLException {
         try {
@@ -38,5 +37,21 @@ public class DBConnection {
 
     public Connection getConnection() {
         return connection;
+    }
+    
+    // --- Temporary Test Method ---
+    public static void main(String[] args) {
+        try {
+            Connection conn = DBConnection.getInstance().getConnection();
+            if (conn != null && !conn.isClosed()) {
+                System.out.println("✅ SUCCESS! Database connection is established.");
+                conn.close();
+            } else {
+                System.out.println("❌ FAILED! Could not establish a database connection.");
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ FAILED! An SQL exception occurred.");
+            e.printStackTrace();
+        }
     }
 }
