@@ -30,7 +30,6 @@
 
         <div class="form-section">
             <form action="system?action=updateCustomer" method="post">
-                <!-- Hidden input to send the account number -->
                 <input type="hidden" name="accountNo" value="<c:out value='${customer.accountNo}' />">
                 
                 <div class="form-group">
@@ -48,6 +47,10 @@
                 <div class="form-group">
                     <label>Phone:</label>
                     <input type="text" name="phone" value="<c:out value='${customer.phone}' />" required>
+                </div>
+                <div class="form-group">
+                    <label>Units Consumed:</label>
+                    <input type="number" name="unitsConsumed" value="<c:out value='${customer.unitsUsed}' />" required>
                 </div>
                 <div class="form-group">
                     <label>Username:</label>

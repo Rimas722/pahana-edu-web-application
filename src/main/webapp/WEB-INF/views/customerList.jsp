@@ -22,6 +22,7 @@
         .nav { margin-bottom: 20px; }
         .nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
         .actions a { margin-right: 10px; text-decoration: none; }
+        .success-message { padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -33,6 +34,14 @@
             <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
         </div>
+
+        <!-- Display success message if it exists -->
+        <c:if test="${not empty sessionScope.successMessage}">
+            <div class="success-message">
+                <c:out value="${sessionScope.successMessage}" />
+            </div>
+            <c:remove var="successMessage" scope="session" />
+        </c:if>
 
         <h2>Customer List</h2>
         <table>

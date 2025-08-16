@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,36 +90,26 @@ public class SystemController extends HttpServlet {
                 break;
         }
     }
+    
 
-    private void showHelpPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/help.jsp").forward(request, response);
-    }
-
-
-    private void showEditItemForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int itemId = Integer.parseInt(request.getParameter("itemId"));
-        Item existingItem = itemService.getItem(itemId);
-        request.setAttribute("item", existingItem);
-        request.getRequestDispatcher("/WEB-INF/views/editItem.jsp").forward(request, response);
-    }
-
-    private void updateItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int itemId = Integer.parseInt(request.getParameter("itemId"));
-        String itemName = request.getParameter("itemName");
-        double price = Double.parseDouble(request.getParameter("price"));
-
-        Item item = new Item(itemId, itemName, price);
-        itemService.updateItem(item);
-        response.sendRedirect("system?action=listItems");
-    }
-
-    private void showEditCustomerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void addCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int accountNo = Integer.parseInt(request.getParameter("accountNo"));
-        Customer existingCustomer = customerService.getCustomer(accountNo);
-        request.setAttribute("customer", existingCustomer);
-        request.getRequestDispatcher("/WEB-INF/views/editCustomer.jsp").forward(request, response);
-    }
+        String name = request.getParameter("name");
+        String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
+        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
+        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
+        customerService.addCustomer(customer);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Customer '" + name + "' was added successfully!");
+        
+        response.sendRedirect("system?action=listCustomers");
+    }
+    
     private void updateCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int accountNo = Integer.parseInt(request.getParameter("accountNo"));
         String name = request.getParameter("name");
@@ -130,19 +121,78 @@ public class SystemController extends HttpServlet {
 
         Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
         customerService.updateCustomer(customer);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Customer '" + name + "' was updated successfully!");
+        
         response.sendRedirect("system?action=listCustomers");
     }
     
     private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int accountNo = Integer.parseInt(request.getParameter("accountNo"));
         customerService.deleteCustomer(accountNo);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Customer with Account No " + accountNo + " was deleted successfully!");
+        
         response.sendRedirect("system?action=listCustomers");
     }
 
+    private void addItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String itemName = request.getParameter("itemName");
+        double price = Double.parseDouble(request.getParameter("price"));
+
+        Item item = new Item(0, itemName, price);
+        itemService.addItem(item);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Item '" + itemName + "' was added successfully!");
+        
+        response.sendRedirect("system?action=listItems");
+    }
+    
+    private void updateItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int itemId = Integer.parseInt(request.getParameter("itemId"));
+        String itemName = request.getParameter("itemName");
+        double price = Double.parseDouble(request.getParameter("price"));
+
+        Item item = new Item(itemId, itemName, price);
+        itemService.updateItem(item);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Item '" + itemName + "' was updated successfully!");
+        
+        response.sendRedirect("system?action=listItems");
+    }
+    
     private void deleteItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int itemId = Integer.parseInt(request.getParameter("itemId"));
         itemService.deleteItem(itemId);
+        
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Item with ID " + itemId + " was deleted successfully!");
+        
         response.sendRedirect("system?action=listItems");
+    }
+
+
+
+    private void showHelpPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/help.jsp").forward(request, response);
+    }
+
+    private void showEditItemForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int itemId = Integer.parseInt(request.getParameter("itemId"));
+        Item existingItem = itemService.getItem(itemId);
+        request.setAttribute("item", existingItem);
+        request.getRequestDispatcher("/WEB-INF/views/editItem.jsp").forward(request, response);
+    }
+
+    private void showEditCustomerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
+        Customer existingCustomer = customerService.getCustomer(accountNo);
+        request.setAttribute("customer", existingCustomer);
+        request.getRequestDispatcher("/WEB-INF/views/editCustomer.jsp").forward(request, response);
     }
 
     private void showBillPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -184,28 +234,5 @@ public class SystemController extends HttpServlet {
         List<Item> items = itemService.getAllItems();
         request.setAttribute("items", items);
         request.getRequestDispatcher("/WEB-INF/views/itemList.jsp").forward(request, response);
-    }
-
-    private void addCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
-        customerService.addCustomer(customer);
-        response.sendRedirect("system?action=listCustomers");
-    }
-
-    private void addItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String itemName = request.getParameter("itemName");
-        double price = Double.parseDouble(request.getParameter("price"));
-
-        Item item = new Item(0, itemName, price);
-        itemService.addItem(item);
-        response.sendRedirect("system?action=listItems");
     }
 }
