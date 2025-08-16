@@ -55,6 +55,9 @@ public class SystemController extends HttpServlet {
             case "showEditItemForm":
                 showEditItemForm(request, response);
                 break;
+            case "showHelpPage":
+                showHelpPage(request, response);
+                break;
             default:
                 listCustomers(request, response);
                 break;
@@ -78,7 +81,7 @@ public class SystemController extends HttpServlet {
             case "updateCustomer":
                 updateCustomer(request, response);
                 break;
-            case "updateItem": 
+            case "updateItem":
                 updateItem(request, response);
                 break;
             default:
@@ -86,6 +89,11 @@ public class SystemController extends HttpServlet {
                 break;
         }
     }
+
+    private void showHelpPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/help.jsp").forward(request, response);
+    }
+
 
     private void showEditItemForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int itemId = Integer.parseInt(request.getParameter("itemId"));
@@ -104,7 +112,6 @@ public class SystemController extends HttpServlet {
         response.sendRedirect("system?action=listItems");
     }
 
-
     private void showEditCustomerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int accountNo = Integer.parseInt(request.getParameter("accountNo"));
         Customer existingCustomer = customerService.getCustomer(accountNo);
@@ -117,10 +124,11 @@ public class SystemController extends HttpServlet {
         String name = request.getParameter("name");
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
+        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        Customer customer = new Customer(accountNo, name, address, phone, 0, username, password);
+        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
         customerService.updateCustomer(customer);
         response.sendRedirect("system?action=listCustomers");
     }
@@ -183,10 +191,11 @@ public class SystemController extends HttpServlet {
         String name = request.getParameter("name");
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
+        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        Customer customer = new Customer(accountNo, name, address, phone, 0, username, password);
+        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
         customerService.addCustomer(customer);
         response.sendRedirect("system?action=listCustomers");
     }

@@ -7,7 +7,7 @@
     <title>Customer Management</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         h2 { color: #0056b3; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
@@ -30,6 +30,7 @@
             <a href="system?action=listCustomers">Customer Management</a>
             <a href="system?action=listItems">Item Management</a>
             <a href="system?action=showBillPage">Generate Bill</a>
+            <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
         </div>
 
@@ -40,6 +41,7 @@
                 <th>Name</th>
                 <th>Address</th>
                 <th>Phone</th>
+                <th>Units Consumed</th>
                 <th>Username</th>
                 <th>Actions</th>
             </tr>
@@ -49,6 +51,7 @@
                     <td><c:out value="${customer.name}" /></td>
                     <td><c:out value="${customer.address}" /></td>
                     <td><c:out value="${customer.phone}" /></td>
+                    <td><c:out value="${customer.unitsUsed}" /></td>
                     <td><c:out value="${customer.username}" /></td>
                     <td class="actions">
                         <a href="system?action=showEditCustomerForm&accountNo=${customer.accountNo}">Edit</a>
@@ -76,6 +79,10 @@
                 <div class="form-group">
                     <label>Phone:</label>
                     <input type="text" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Units Consumed:</label>
+                    <input type="number" name="unitsConsumed" required>
                 </div>
                 <div class="form-group">
                     <label>Username:</label>

@@ -26,6 +26,8 @@
         <div class="nav">
             <a href="system?action=listCustomers">Customer Management</a>
             <a href="system?action=listItems">Item Management</a>
+            <a href="system?action=showBillPage">Generate Bill</a>
+            <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
         </div>
 
