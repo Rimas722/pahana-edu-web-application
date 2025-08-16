@@ -7,6 +7,9 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .login-container { background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        .header { margin-bottom: 25px; }
+        .header h1 { color: #0056b3; margin: 0; font-size: 28px; }
+        .header p { color: #666; margin: 5px 0 0; }
         h2 { color: #333; margin-bottom: 25px; }
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; margin-bottom: 5px; color: #555; }
@@ -18,7 +21,10 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Admin Login</h2>
+        <div class="header">
+            <h1>Pahana Edu</h1>
+            <p>Online Billing System</p>
+        </div>
         
         <% 
             String errorMessage = (String) request.getAttribute("errorMessage");

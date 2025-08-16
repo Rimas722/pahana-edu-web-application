@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -19,8 +18,7 @@ public class LoginServlet extends HttpServlet {
     private AdminService adminService;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
+    public void init() {
         this.adminService = new AdminServiceImpl();
     }
 
@@ -32,7 +30,8 @@ public class LoginServlet extends HttpServlet {
         if (adminService.validateAdmin(username, password)) {
             HttpSession session = request.getSession();
             session.setAttribute("adminUser", username);
-            response.sendRedirect("system?action=listCustomers");
+
+            request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessage", "Invalid username or password.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
