@@ -15,6 +15,7 @@ public class BillDAOImpl implements BillDAO {
 
     private Connection connection;
     private ItemDAO itemDAO;
+
     public BillDAOImpl() {
         try {
             this.connection = DBConnection.getInstance().getConnection();
@@ -26,12 +27,13 @@ public class BillDAOImpl implements BillDAO {
 
     @Override
     public int addBill(Bill bill) {
-        String billQuery = "INSERT INTO bills (customerId, total) VALUES (?, ?)";
+        String billQuery = "INSERT INTO bills (customer_account_no, total_amount) VALUES (?, ?)";
         String billItemQuery = "INSERT INTO bill_items (billId, itemId) VALUES (?, ?)";
         int billId = 0;
 
         try {
             connection.setAutoCommit(false);
+
             try (PreparedStatement billStmt = connection.prepareStatement(billQuery, Statement.RETURN_GENERATED_KEYS)) {
                 billStmt.setInt(1, bill.getCustomer().getAccountNo());
                 billStmt.setDouble(2, bill.getTotal());
@@ -40,9 +42,10 @@ public class BillDAOImpl implements BillDAO {
                 ResultSet generatedKeys = billStmt.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     billId = generatedKeys.getInt(1);
-                    bill.setBillId(billId);
+                    bill.setBillId(billId); 
                 }
             }
+
             try (PreparedStatement billItemStmt = connection.prepareStatement(billItemQuery)) {
                 for (Item item : bill.getItems()) {
                     billItemStmt.setInt(1, billId);
@@ -88,6 +91,17 @@ public class BillDAOImpl implements BillDAO {
                 }
             }
             bill.setItems(items);
+            CustomerDAO customerDAO = new CustomerDAOImpl();
+            String billInfoQuery = "SELECT customer_account_no FROM bills WHERE billId = ?";
+            try(PreparedStatement billInfoStmt = connection.prepareStatement(billInfoQuery)) {
+                billInfoStmt.setInt(1, billId);
+                ResultSet billInfoRs = billInfoStmt.executeQuery();
+                if(billInfoRs.next()) {
+                    int customerId = billInfoRs.getInt("customer_account_no");
+                    bill.setCustomer(customerDAO.getCustomerByAccountNo(customerId));
+                }
+            }
+            
             bill.calculateTotal(); 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,13 +112,13 @@ public class BillDAOImpl implements BillDAO {
     @Override
     public List<Bill> getBillsByCustomerId(int customerId) {
         List<Bill> bills = new ArrayList<>();
-        String query = "SELECT * FROM bills WHERE customerId = ?";
+        String query = "SELECT * FROM bills WHERE customer_account_no = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, customerId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int billId = resultSet.getInt("billId");
-                Bill bill = getBillById(billId); 
+                Bill bill = getBillById(billId);
                 bills.add(bill);
             }
         } catch (SQLException e) {

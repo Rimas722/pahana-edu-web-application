@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 public class ItemDAOImpl implements ItemDAO {
 
     private Connection connection;
@@ -22,7 +23,7 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public void addItem(Item item) {
-        String query = "INSERT INTO items (itemName, price) VALUES (?, ?)";
+        String query = "INSERT INTO items (item_name, price) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getItemName());
             preparedStatement.setDouble(2, item.getPrice());
@@ -39,7 +40,7 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public void updateItem(Item item) {
-        String query = "UPDATE items SET itemName = ?, price = ? WHERE itemId = ?";
+        String query = "UPDATE items SET item_name = ?, price = ? WHERE item_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, item.getItemName());
             preparedStatement.setDouble(2, item.getPrice());
@@ -52,7 +53,7 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public void deleteItem(int itemId) {
-        String query = "DELETE FROM items WHERE itemId = ?";
+        String query = "DELETE FROM items WHERE item_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, itemId);
             preparedStatement.executeUpdate();
@@ -63,15 +64,15 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public Item getItemById(int itemId) {
-        String query = "SELECT * FROM items WHERE itemId = ?";
+        String query = "SELECT * FROM items WHERE item_id = ?";
         Item item = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, itemId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 item = new Item();
-                item.setItemId(resultSet.getInt("itemId"));
-                item.setItemName(resultSet.getString("itemName"));
+                item.setItemId(resultSet.getInt("item_id"));
+                item.setItemName(resultSet.getString("item_name"));
                 item.setPrice(resultSet.getDouble("price"));
             }
         } catch (SQLException e) {
@@ -88,8 +89,8 @@ public class ItemDAOImpl implements ItemDAO {
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
                 Item item = new Item();
-                item.setItemId(resultSet.getInt("itemId"));
-                item.setItemName(resultSet.getString("itemName"));
+                item.setItemId(resultSet.getInt("item_id"));
+                item.setItemName(resultSet.getString("item_name"));
                 item.setPrice(resultSet.getDouble("price"));
                 items.add(item);
             }

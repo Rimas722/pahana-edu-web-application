@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Customer Management</title>
+    <title>Item Management</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -33,59 +33,39 @@
             <a href="logout">Logout</a>
         </div>
 
-        <h2>Customer List</h2>
+        <h2>Item List</h2>
         <table>
             <tr>
-                <th>Account No</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Username</th>
+                <th>Item ID</th>
+                <th>Item Name</th>
+                <th>Price</th>
                 <th>Actions</th>
             </tr>
-            <c:forEach var="customer" items="${customers}">
+            <c:forEach var="item" items="${items}">
                 <tr>
-                    <td><c:out value="${customer.accountNo}" /></td>
-                    <td><c:out value="${customer.name}" /></td>
-                    <td><c:out value="${customer.address}" /></td>
-                    <td><c:out value="${customer.phone}" /></td>
-                    <td><c:out value="${customer.username}" /></td>
+                    <td><c:out value="${item.itemId}" /></td>
+                    <td><c:out value="${item.itemName}" /></td>
+                    <td><c:out value="${item.price}" /></td>
                     <td class="actions">
-                        <a href="system?action=showEditCustomerForm&accountNo=${customer.accountNo}">Edit</a>
-                        <a href="system?action=deleteCustomer&accountNo=${customer.accountNo}" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
+                        <a href="system?action=showEditItemForm&itemId=${item.itemId}">Edit</a>
+                        <a href="system?action=deleteItem&itemId=${item.itemId}" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                     </td>
                 </tr>
             </c:forEach>
         </table>
 
         <div class="form-section">
-            <h2>Add New Customer</h2>
-            <form action="system?action=addCustomer" method="post">
+            <h2>Add New Item</h2>
+            <form action="system?action=addItem" method="post">
                 <div class="form-group">
-                    <label>Account Number:</label>
-                    <input type="number" name="accountNo" required>
+                    <label>Item Name:</label>
+                    <input type="text" name="itemName" required>
                 </div>
                 <div class="form-group">
-                    <label>Name:</label>
-                    <input type="text" name="name" required>
+                    <label>Price:</label>
+                    <input type="number" step="0.01" name="price" required>
                 </div>
-                <div class="form-group">
-                    <label>Address:</label>
-                    <input type="text" name="address" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone:</label>
-                    <input type="text" name="phone" required>
-                </div>
-                <div class="form-group">
-                    <label>Username:</label>
-                    <input type="text" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input type="password" name="password" required>
-                </div>
-                <button type="submit" class="btn">Add Customer</button>
+                <button type="submit" class="btn">Add Item</button>
             </form>
         </div>
     </div>
