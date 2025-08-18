@@ -33,9 +33,9 @@
             <a href="system?action=showBillPage">Generate Bill</a>
             <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
+            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
-        
-        <!-- Display success message if it exists -->
+
         <c:if test="${not empty sessionScope.successMessage}">
             <div class="success-message">
                 <c:out value="${sessionScope.successMessage}" />

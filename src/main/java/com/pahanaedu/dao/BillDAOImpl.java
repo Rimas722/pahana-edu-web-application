@@ -1,8 +1,8 @@
 package com.pahanaedu.dao;
 
 import com.pahanaedu.model.Bill;
+import com.pahanaedu.model.Customer;
 import com.pahanaedu.model.Item;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,10 +19,63 @@ public class BillDAOImpl implements BillDAO {
     public BillDAOImpl() {
         try {
             this.connection = DBConnection.getInstance().getConnection();
-            this.itemDAO = new ItemDAOImpl();
+            this.itemDAO = new ItemDAOImpl(); 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Bill> getAllBills() {
+        List<Bill> bills = new ArrayList<>();
+        String query = "SELECT b.bill_id, b.total_amount, c.* FROM bills b JOIN customers c ON b.customer_account_no = c.account_no ORDER BY b.bill_id DESC";
+        
+        try (Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery(query)) {
+
+            while (rs.next()) {
+                Bill bill = new Bill();
+                Customer customer = new Customer();
+
+                customer.setAccountNo(rs.getInt("account_no"));
+                customer.setName(rs.getString("name"));
+                customer.setAddress(rs.getString("address"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setUnitsUsed(rs.getInt("units_consumed"));
+                customer.setUsername(rs.getString("username"));
+                customer.setPassword(rs.getString("password_hash"));
+
+                bill.setBillId(rs.getInt("bill_id"));
+                bill.setTotal(rs.getDouble("total_amount"));
+                bill.setCustomer(customer);
+
+                List<Item> items = getItemsForBill(bill.getBillId());
+                bill.setItems(items);
+                
+                bills.add(bill);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bills;
+    }
+    
+    private List<Item> getItemsForBill(int billId) {
+        List<Item> items = new ArrayList<>();
+        String query = "SELECT itemId FROM bill_items WHERE billId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, billId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Item item = itemDAO.getItemById(rs.getInt("itemId"));
+                if (item != null) {
+                    items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
     @Override
@@ -30,22 +83,18 @@ public class BillDAOImpl implements BillDAO {
         String billQuery = "INSERT INTO bills (customer_account_no, total_amount) VALUES (?, ?)";
         String billItemQuery = "INSERT INTO bill_items (billId, itemId) VALUES (?, ?)";
         int billId = 0;
-
         try {
             connection.setAutoCommit(false);
-
             try (PreparedStatement billStmt = connection.prepareStatement(billQuery, Statement.RETURN_GENERATED_KEYS)) {
                 billStmt.setInt(1, bill.getCustomer().getAccountNo());
                 billStmt.setDouble(2, bill.getTotal());
                 billStmt.executeUpdate();
-
                 ResultSet generatedKeys = billStmt.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     billId = generatedKeys.getInt(1);
-                    bill.setBillId(billId); 
+                    bill.setBillId(billId);
                 }
             }
-
             try (PreparedStatement billItemStmt = connection.prepareStatement(billItemQuery)) {
                 for (Item item : bill.getItems()) {
                     billItemStmt.setInt(1, billId);
@@ -54,9 +103,7 @@ public class BillDAOImpl implements BillDAO {
                 }
                 billItemStmt.executeBatch();
             }
-
             connection.commit();
-
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -76,54 +123,24 @@ public class BillDAOImpl implements BillDAO {
 
     @Override
     public Bill getBillById(int billId) {
-        String query = "SELECT * FROM bill_items WHERE billId = ?";
-        Bill bill = new Bill();
-        bill.setBillId(billId);
-        List<Item> items = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, billId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int itemId = resultSet.getInt("itemId");
-                Item item = itemDAO.getItemById(itemId);
-                if (item != null) {
-                    items.add(item);
-                }
+        List<Bill> allBills = getAllBills();
+        for(Bill bill : allBills) {
+            if(bill.getBillId() == billId) {
+                return bill;
             }
-            bill.setItems(items);
-            CustomerDAO customerDAO = new CustomerDAOImpl();
-            String billInfoQuery = "SELECT customer_account_no FROM bills WHERE billId = ?";
-            try(PreparedStatement billInfoStmt = connection.prepareStatement(billInfoQuery)) {
-                billInfoStmt.setInt(1, billId);
-                ResultSet billInfoRs = billInfoStmt.executeQuery();
-                if(billInfoRs.next()) {
-                    int customerId = billInfoRs.getInt("customer_account_no");
-                    bill.setCustomer(customerDAO.getCustomerByAccountNo(customerId));
-                }
-            }
-            
-            bill.calculateTotal(); 
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return bill;
+        return null;
     }
 
     @Override
     public List<Bill> getBillsByCustomerId(int customerId) {
-        List<Bill> bills = new ArrayList<>();
-        String query = "SELECT * FROM bills WHERE customer_account_no = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, customerId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int billId = resultSet.getInt("billId");
-                Bill bill = getBillById(billId);
-                bills.add(bill);
+        List<Bill> customerBills = new ArrayList<>();
+        List<Bill> allBills = getAllBills();
+        for (Bill bill : allBills) {
+            if (bill.getCustomer().getAccountNo() == customerId) {
+                customerBills.add(bill);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return bills;
+        return customerBills;
     }
 }

@@ -40,6 +40,10 @@
                 <h3>Generate Bill</h3>
                 <p>Create and calculate a new bill for a customer.</p>
             </a>
+            <a href="system?action=showReports" class="card">
+                <h3>View Reports</h3>
+                <p>See a summary of all generated bills.</p>
+            </a>
             <a href="system?action=showHelpPage" class="card">
                 <h3>Help Section</h3>
                 <p>View guidelines on how to use the system.</p>

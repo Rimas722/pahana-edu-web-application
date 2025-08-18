@@ -29,6 +29,7 @@
             <a href="system?action=showBillPage">Generate Bill</a>
             <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
+            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
 
         <h2>Generate a New Bill</h2>

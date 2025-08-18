@@ -22,6 +22,7 @@
             <a href="system?action=listItems">Item Management</a>
             <a href="system?action=showBillPage">Generate Bill</a>
             <a href="logout">Logout</a>
+            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
 
         <h2>Help & Guidelines</h2>

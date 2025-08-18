@@ -24,6 +24,7 @@
     <div class="container">
         <div class="nav">
             <a href="system?action=listItems">Back to Item List</a>
+            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
 
         <h2>Edit Item Details</h2>
