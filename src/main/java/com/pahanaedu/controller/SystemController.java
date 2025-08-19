@@ -6,6 +6,7 @@ import com.pahanaedu.model.Item;
 import com.pahanaedu.service.*;
 import com.pahanaedu.dao.BillDAO;
 import com.pahanaedu.dao.BillDAOImpl;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -76,41 +77,105 @@ public class SystemController extends HttpServlet {
                 break;
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        HttpSession session = request.getSession();
+
+        switch (action) {
+            case "addCustomer":
+                addCustomer(request, response);
+                session.setAttribute("successMessage", "Customer added successfully!");
+                response.sendRedirect("system?action=listCustomers");
+                break;
+            case "updateCustomer":
+                updateCustomer(request, response);
+                session.setAttribute("successMessage", "Customer updated successfully!");
+                response.sendRedirect("system?action=listCustomers");
+                break;
+            case "addItem":
+                addItem(request, response);
+                session.setAttribute("successMessage", "Item added successfully!");
+                response.sendRedirect("system?action=listItems");
+                break;
+            case "updateItem":
+                updateItem(request, response);
+                session.setAttribute("successMessage", "Item updated successfully!");
+                response.sendRedirect("system?action=listItems");
+                break;
+            case "generateBill":
+                generateBill(request, response);
+                break;
+            default:
+                doGet(request, response);
+                break;
+        }
+    }
     
+    private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
+        customerService.deleteCustomer(accountNo);
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Customer with Account No " + accountNo + " was deleted successfully!");
+        response.sendRedirect("system?action=listCustomers");
+    }
+
+    private void deleteItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int itemId = Integer.parseInt(request.getParameter("itemId"));
+        itemService.deleteItem(itemId);
+        HttpSession session = request.getSession();
+        session.setAttribute("successMessage", "Item with ID " + itemId + " was deleted successfully!");
+        response.sendRedirect("system?action=listItems");
+    }
+
     private void showDashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
     }
-
+    
     private void showReports(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Bill> allBills = billDAO.getAllBills();
         request.setAttribute("allBills", allBills);
         request.getRequestDispatcher("/WEB-INF/views/reports.jsp").forward(request, response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+    private void addCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
+        String name = request.getParameter("name");
+        String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
+        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
+        customerService.addCustomer(customer);
+    }
+    
+    private void updateCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
+        String name = request.getParameter("name");
+        String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
+        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
+        customerService.updateCustomer(customer);
+    }
 
-        switch (action) {
-            case "addCustomer":
-                addCustomer(request, response);
-                break;
-            case "addItem":
-                addItem(request, response);
-                break;
-            case "generateBill":
-                generateBill(request, response);
-                break;
-            case "updateCustomer":
-                updateCustomer(request, response);
-                break;
-            case "updateItem":
-                updateItem(request, response);
-                break;
-            default:
-                doGet(request, response);
-                break;
-        }
+    private void addItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String itemName = request.getParameter("itemName");
+        double price = Double.parseDouble(request.getParameter("price"));
+        Item item = new Item(0, itemName, price);
+        itemService.addItem(item);
+    }
+    
+    private void updateItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int itemId = Integer.parseInt(request.getParameter("itemId"));
+        String itemName = request.getParameter("itemName");
+        double price = Double.parseDouble(request.getParameter("price"));
+        Item item = new Item(itemId, itemName, price);
+        itemService.updateItem(item);
     }
 
     private void showHelpPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -124,47 +189,11 @@ public class SystemController extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/editItem.jsp").forward(request, response);
     }
 
-    private void updateItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int itemId = Integer.parseInt(request.getParameter("itemId"));
-        String itemName = request.getParameter("itemName");
-        double price = Double.parseDouble(request.getParameter("price"));
-
-        Item item = new Item(itemId, itemName, price);
-        itemService.updateItem(item);
-        response.sendRedirect("system?action=listItems");
-    }
-
     private void showEditCustomerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int accountNo = Integer.parseInt(request.getParameter("accountNo"));
         Customer existingCustomer = customerService.getCustomer(accountNo);
         request.setAttribute("customer", existingCustomer);
         request.getRequestDispatcher("/WEB-INF/views/editCustomer.jsp").forward(request, response);
-    }
-
-    private void updateCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
-        customerService.updateCustomer(customer);
-        response.sendRedirect("system?action=listCustomers");
-    }
-    
-    private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
-        customerService.deleteCustomer(accountNo);
-        response.sendRedirect("system?action=listCustomers");
-    }
-
-    private void deleteItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int itemId = Integer.parseInt(request.getParameter("itemId"));
-        itemService.deleteItem(itemId);
-        response.sendRedirect("system?action=listItems");
     }
 
     private void showBillPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -178,7 +207,6 @@ public class SystemController extends HttpServlet {
     private void generateBill(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int customerId = Integer.parseInt(request.getParameter("customerId"));
         String[] selectedItemsIds = request.getParameterValues("selectedItems");
-
         List<Item> selectedItems = new ArrayList<>();
         if (selectedItemsIds != null) {
             for (String itemIdStr : selectedItemsIds) {
@@ -189,9 +217,7 @@ public class SystemController extends HttpServlet {
                 }
             }
         }
-
         Bill generatedBill = billingService.generateBill(customerId, selectedItems);
-
         request.setAttribute("bill", generatedBill);
         request.getRequestDispatcher("/WEB-INF/views/billDetails.jsp").forward(request, response);
     }
@@ -206,28 +232,5 @@ public class SystemController extends HttpServlet {
         List<Item> items = itemService.getAllItems();
         request.setAttribute("items", items);
         request.getRequestDispatcher("/WEB-INF/views/itemList.jsp").forward(request, response);
-    }
-
-    private void addCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int accountNo = Integer.parseInt(request.getParameter("accountNo"));
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed, username, password);
-        customerService.addCustomer(customer);
-        response.sendRedirect("system?action=listCustomers");
-    }
-
-    private void addItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String itemName = request.getParameter("itemName");
-        double price = Double.parseDouble(request.getParameter("price"));
-
-        Item item = new Item(0, itemName, price);
-        itemService.addItem(item);
-        response.sendRedirect("system?action=listItems");
     }
 }

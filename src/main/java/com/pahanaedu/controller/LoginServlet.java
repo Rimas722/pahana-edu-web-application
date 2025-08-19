@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("adminUser", username);
 
-            request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
+            response.sendRedirect("system?action=showDashboard");
         } else {
             request.setAttribute("errorMessage", "Invalid username or password.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -40,6 +40,13 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+
+        if (session != null && session.getAttribute("adminUser") != null) {
+            response.sendRedirect("system?action=showDashboard");
+            return; 
+        }
+
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 }

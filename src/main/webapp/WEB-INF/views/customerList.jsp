@@ -6,8 +6,10 @@
     <meta charset="UTF-8">
     <title>Customer Management</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header { background-color: #0056b3; color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         h2 { color: #0056b3; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
@@ -19,23 +21,26 @@
         .form-group input { width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
         .btn { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
         .btn:hover { opacity: 0.9; }
-        .nav { margin-bottom: 20px; }
+        .nav { padding: 10px 20px; background-color: #e9ecef; border-radius: 8px; margin-bottom: 20px; }
         .nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
         .actions a { margin-right: 10px; text-decoration: none; }
         .success-message { padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Customer Management</h1>
+    </div>
     <div class="container">
         <div class="nav">
-            <a href="system?action=listCustomers">Customer Management</a>
+            <a href="system?action=showDashboard">Dashboard</a>
             <a href="system?action=listItems">Item Management</a>
             <a href="system?action=showBillPage">Generate Bill</a>
             <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
-            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
 
+        <!-- Display success message if it exists -->
         <c:if test="${not empty sessionScope.successMessage}">
             <div class="success-message">
                 <c:out value="${sessionScope.successMessage}" />
@@ -45,29 +50,33 @@
 
         <h2>Customer List</h2>
         <table>
-            <tr>
-                <th>Account No</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Units Consumed</th>
-                <th>Username</th>
-                <th>Actions</th>
-            </tr>
-            <c:forEach var="customer" items="${customers}">
+            <thead>
                 <tr>
-                    <td><c:out value="${customer.accountNo}" /></td>
-                    <td><c:out value="${customer.name}" /></td>
-                    <td><c:out value="${customer.address}" /></td>
-                    <td><c:out value="${customer.phone}" /></td>
-                    <td><c:out value="${customer.unitsUsed}" /></td>
-                    <td><c:out value="${customer.username}" /></td>
-                    <td class="actions">
-                        <a href="system?action=showEditCustomerForm&accountNo=${customer.accountNo}">Edit</a>
-                        <a href="system?action=deleteCustomer&accountNo=${customer.accountNo}" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
-                    </td>
+                    <th>Account No</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Units Consumed</th>
+                    <th>Username</th>
+                    <th>Actions</th>
                 </tr>
-            </c:forEach>
+            </thead>
+            <tbody>
+                <c:forEach var="customer" items="${customers}">
+                    <tr>
+                        <td><c:out value="${customer.accountNo}" /></td>
+                        <td><c:out value="${customer.name}" /></td>
+                        <td><c:out value="${customer.address}" /></td>
+                        <td><c:out value="${customer.phone}" /></td>
+                        <td><c:out value="${customer.unitsUsed}" /></td>
+                        <td><c:out value="${customer.username}" /></td>
+                        <td class="actions">
+                            <a href="system?action=showEditCustomerForm&accountNo=${customer.accountNo}">Edit</a>
+                            <a href="system?action=deleteCustomer&accountNo=${customer.accountNo}" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
         </table>
 
         <div class="form-section">
