@@ -5,24 +5,30 @@
     <meta charset="UTF-8">
     <title>Help Section</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header { background-color: #0056b3; color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; }
+        .container { max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .help-section { margin-bottom: 20px; }
         .help-section h3 { color: #333; }
         .help-section p { line-height: 1.6; }
-        .nav { margin-bottom: 20px; }
+        .nav { padding: 10px 20px; background-color: #e9ecef; border-radius: 8px; margin-bottom: 20px; }
         .nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .nav a:hover { background-color: #ddd; color: black; border-radius: 4px; }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Help & Guidelines</h1>
+    </div>
     <div class="container">
         <div class="nav">
+            <a href="system?action=showDashboard">Dashboard</a>
             <a href="system?action=listCustomers">Customer Management</a>
             <a href="system?action=listItems">Item Management</a>
             <a href="system?action=showBillPage">Generate Bill</a>
             <a href="logout">Logout</a>
-            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
 
         <h2>Help & Guidelines</h2>
@@ -40,6 +46,11 @@
         <div class="help-section">
             <h3>Generate Bill</h3>
             <p>On this page, you can create a new bill for a customer. First, select the customer from the dropdown menu. Then, check the boxes next to all the items they are purchasing. Click "Generate Bill" to see the final calculated bill, including any applicable discounts.</p>
+        </div>
+        
+        <div class="help-section">
+            <h3>Billing Reports</h3>
+            <p>The reports page provides a summary of all bills that have been generated in the system. It displays key information for each bill, including the Bill ID, the customer's name and account number, the total amount, and the number of items on the bill.</p>
         </div>
         
         <div class="help-section">

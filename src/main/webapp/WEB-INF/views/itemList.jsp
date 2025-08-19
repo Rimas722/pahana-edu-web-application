@@ -23,6 +23,7 @@
         .btn:hover { opacity: 0.9; }
         .nav { padding: 10px 20px; background-color: #e9ecef; border-radius: 8px; margin-bottom: 20px; }
         .nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .nav a:hover { background-color: #ddd; color: black; border-radius: 4px; }
         .actions a { margin-right: 10px; text-decoration: none; }
         .success-message { padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px; }
     </style>

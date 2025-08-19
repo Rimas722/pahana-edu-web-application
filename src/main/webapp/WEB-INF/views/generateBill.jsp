@@ -6,8 +6,10 @@
     <meta charset="UTF-8">
     <title>Generate Bill</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header { background-color: #0056b3; color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         h2 { color: #0056b3; }
         .form-section { background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin-top: 20px; border: 1px solid #eee; }
         .form-group { margin-bottom: 15px; }
@@ -17,22 +19,23 @@
         .item-selection label { margin-left: 10px; }
         .btn { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 20px;}
         .btn:hover { background-color: #0056b3; }
-        .nav { margin-bottom: 20px; }
+        .nav { padding: 10px 20px; background-color: #e9ecef; border-radius: 8px; margin-bottom: 20px; }
         .nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .nav a:hover { background-color: #ddd; color: black; border-radius: 4px; }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Generate a New Bill</h1>
+    </div>
     <div class="container">
         <div class="nav">
+            <a href="system?action=showDashboard">Dashboard</a>
             <a href="system?action=listCustomers">Customer Management</a>
             <a href="system?action=listItems">Item Management</a>
-            <a href="system?action=showBillPage">Generate Bill</a>
             <a href="system?action=showHelpPage">Help</a>
             <a href="logout">Logout</a>
-            <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
         </div>
-
-        <h2>Generate a New Bill</h2>
 
         <div class="form-section">
             <form action="system?action=generateBill" method="post">
@@ -45,7 +48,6 @@
                         </c:forEach>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Select Items:</label>
                     <div class="item-list">
@@ -57,7 +59,6 @@
                         </c:forEach>
                     </div>
                 </div>
-                
                 <button type="submit" class="btn">Generate Bill</button>
             </form>
         </div>

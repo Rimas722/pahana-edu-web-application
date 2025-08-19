@@ -15,7 +15,9 @@
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #007bff; color: white; }
         tr:nth-child(even) { background-color: #f2f2f2; }
-        .nav-link { display: inline-block; margin-bottom: 20px; font-weight: bold; color: #007bff; text-decoration: none; }
+        .nav { padding: 10px 20px; background-color: #e9ecef; border-radius: 8px; margin-bottom: 20px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .nav a:hover { background-color: #ddd; color: black; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -24,7 +26,15 @@
     </div>
 
     <div class="container">
-        <a href="system?action=showDashboard" class="nav-link">&larr; Back to Dashboard</a>
+        <div class="nav">
+            <a href="system?action=showDashboard">Dashboard</a>
+            <a href="system?action=listCustomers">Customer Management</a>
+            <a href="system?action=listItems">Item Management</a>
+            <a href="system?action=showBillPage">Generate Bill</a>
+            <a href="system?action=showHelpPage">Help</a>
+            <a href="logout">Logout</a>
+        </div>
+
         <h2>All Generated Bills</h2>
         
         <table>
