@@ -20,7 +20,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Help & Guidelines</h1>
+        <h1>Help &amp; Guidelines</h1>
     </div>
     <div class="container">
         <div class="nav">
@@ -31,7 +31,7 @@
             <a href="logout">Logout</a>
         </div>
 
-        <h2>Help & Guidelines</h2>
+        <h2>Help &amp; Guidelines</h2>
 
         <div class="help-section">
             <h3>Customer Management</h3>
