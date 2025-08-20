@@ -12,13 +12,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public boolean validateAdmin(String username, String password) {
         Admin admin = adminDAO.getAdminByUsername(username);
-
-        if (admin != null && admin.getPassword() != null) { 
+        
+        if (admin != null && admin.getPassword() != null) {
             if (BCrypt.checkpw(password, admin.getPassword())) {
                 return true; 
             }
         }
         
-        return false; 
+        return false;
     }
 }
